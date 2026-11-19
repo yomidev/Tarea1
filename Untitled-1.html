@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Práctica: Sistema de Notificaciones</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        line-height: 1.7;
+        color: #222222;
+        background: #f2f2f2;
+        padding: 30px 15px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #ffffff;
+        padding: 50px 60px;
+        border: 1px solid #cfcfcf;
+      }
+
+      /* ===== ENCABEZADO ===== */
+      header {
+        border-bottom: 3px double #1f3a5f;
+        padding-bottom: 22px;
+        margin-bottom: 35px;
+        text-align: center;
+      }
+
+      header h1 {
+        color: #1f3a5f;
+        font-size: 1em;
+        font-weight: bold;
+        letter-spacing: 0.5px;
+        margin-bottom: 6px;
+      }
+
+      header .subtitle {
+        color: #555555;
+        font-size: 0.5em;
+        font-style: italic;
+      }
+
+      .meta-info {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+        font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+        font-size: 0.4em;
+        color: #444444;
+      }
+
+      .meta-info span {
+        border: 1px solid #b5b5b5;
+        padding: 4px 14px;
+        border-radius: 2px;
+        background: #fafafa;
+      }
+
+      .meta-info strong {
+        color: #1f3a5f;
+      }
+
+      /* ===== SECCIONES ===== */
+      section {
+        margin-bottom: 35px;
+      }
+
+      h2 {
+        color: #1f3a5f;
+        font-size: 1.35em;
+        margin-bottom: 15px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #1f3a5f;
+      }
+
+      h3 {
+        color: #333333;
+        font-size: 1.08em;
+        margin: 20px 0 10px 0;
+      }
+
+      p {
+        margin-bottom: 12px;
+        text-align: justify;
+      }
+
+      ul,
+      ol {
+        margin: 10px 0 15px 30px;
+      }
+
+      li {
+        margin-bottom: 7px;
+      }
+
+      /* ===== CAJAS DESTACADAS ===== */
+      .context-box,
+      .warning-box,
+      .info-box {
+        padding: 16px 22px;
+        margin: 18px 0;
+        border: 1px solid #c8c8c8;
+        border-left: 4px solid #1f3a5f;
+        background: #f7f9fc;
+      }
+
+      .warning-box {
+        border-left-color: #8a1f1f;
+        background: #fbf6f6;
+      }
+
+      .info-box {
+        border-left-color: #4a4a4a;
+        background: #f8f8f8;
+      }
+
+      .box-title {
+        font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+        font-size: 0.8em;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #1f3a5f;
+        margin-bottom: 8px;
+      }
+
+      .warning-box .box-title {
+        color: #8a1f1f;
+      }
+
+      .info-box .box-title {
+        color: #4a4a4a;
+      }
+
+      /* ===== TARJETAS DE CANALES ===== */
+      .canales {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 16px;
+        margin: 18px 0;
+      }
+
+      .canal-card {
+        background: #ffffff;
+        border: 1px solid #bdbdbd;
+        border-top: 3px solid #1f3a5f;
+        padding: 18px 20px;
+      }
+
+      .canal-card h4 {
+        color: #1f3a5f;
+        font-size: 1.05em;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .canal-card ul {
+        margin-left: 18px;
+        font-size: 0.93em;
+      }
+
+      /* ===== TABLA ===== */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 0.95em;
+      }
+
+      th {
+        background: #1f3a5f;
+        color: #ffffff;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: bold;
+        border: 1px solid #1f3a5f;
+      }
+
+      td {
+        padding: 9px 12px;
+        border: 1px solid #cfcfcf;
+        vertical-align: top;
+      }
+
+      tbody tr:nth-child(even) {
+        background: #f7f7f7;
+      }
+
+      tr.total td {
+        background: #e6ebf2;
+        font-weight: bold;
+        border-top: 2px solid #1f3a5f;
+      }
+
+      /* ===== LISTA DE CUMPLIMIENTO ===== */
+      .checklist {
+        list-style: none;
+        margin-left: 0;
+      }
+
+      .checklist li {
+        padding: 7px 12px 7px 14px;
+        background: #f7f9fc;
+        border-left: 3px solid #1f3a5f;
+        margin-bottom: 6px;
+      }
+
+      .checklist li::before {
+        content: "\2713";
+        color: #1f3a5f;
+        font-weight: bold;
+        margin-right: 10px;
+      }
+
+      /* ===== CÓDIGO ===== */
+      code {
+        background: #f0f0f0;
+        padding: 1px 6px;
+        border: 1px solid #dcdcdc;
+        border-radius: 3px;
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 0.9em;
+        color: #1a1a1a;
+      }
+
+      /* ===== PREGUNTAS ===== */
+      .preguntas {
+        counter-reset: pregunta;
+        list-style: none;
+        margin-left: 0;
+      }
+
+      .preguntas li {
+        counter-increment: pregunta;
+        padding: 12px 18px 12px 52px;
+        margin-bottom: 10px;
+        position: relative;
+        border: 1px solid #d5d5d5;
+        background: #fafafa;
+      }
+
+      .preguntas li::before {
+        content: counter(pregunta) ".";
+        position: absolute;
+        left: 18px;
+        top: 12px;
+        color: #1f3a5f;
+        font-weight: bold;
+        font-size: 1.05em;
+      }
+
+      /* ===== PIE DE PÁGINA ===== */
+      footer {
+        margin-top: 45px;
+        padding-top: 20px;
+        border-top: 1px solid #1f3a5f;
+        text-align: center;
+        color: #555555;
+        font-size: 0.9em;
+      }
+
+      /* ===== IMPRESIÓN ===== */
+      @media print {
+        body {
+          background: #ffffff;
+          padding: 0;
+        }
+        .container {
+          border: none;
+          padding: 10px;
+        }
+      }
+
+      /* ===== ADAPTABLE ===== */
+      @media (max-width: 600px) {
+        .container {
+          padding: 25px 20px;
+        }
+        header h1 {
+          font-size: 1.5em;
+        }
+        .meta-info {
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- ENCABEZADO -->
+      <header>
+        <h1>Práctica: Sistema de Notificaciones</h1>
+        <p class="subtitle">Clases abstractas, herencia y polimorfismo</p>
+        <div class="meta-info">
+          <span><strong>Duración estimada:</strong> 45 a 60 minutos</span>
+          <span><strong>Modalidad:</strong> Individual o en parejas</span>
+          <span><strong>Herramientas:</strong> Python y UML</span>
+        </div>
+      </header>
+
+      <!-- CONTEXTO -->
+      <section>
+        <h2>1. Contexto</h2>
+        <div class="context-box">
+          Una aplicación requiere enviar <strong>notificaciones</strong> a sus
+          usuarios mediante distintos canales: correo electrónico, mensaje de
+          texto (SMS) y notificación push. Cada canal posee su propia lógica de
+          envío; sin embargo, todos comparten características comunes.
+          <br /><br />
+          El objetivo de la práctica es
+          <strong>diseñar e implementar</strong> el sistema completo.
+        </div>
+      </section>
+
+      <!-- REQUISITOS -->
+      <section>
+        <h2>2. Requisitos</h2>
+
+        <h3>2.1. Clase abstracta <code>Notificacion</code></h3>
+        <p>La clase debe incluir los siguientes elementos:</p>
+        <ul>
+          <li>
+            <strong>Atributo:</strong> <code>destinatario</code> (nombre o
+            identificador del usuario).
+          </li>
+          <li>
+            <strong>Atributo:</strong> <code>mensaje</code> (texto que se
+            enviará).
+          </li>
+          <li>
+            <strong>Método abstracto:</strong> <code>enviar()</code>,
+            implementado por cada canal según su propia lógica.
+          </li>
+          <li>
+            <strong>Método abstracto:</strong> <code>costo()</code>, ya que cada
+            canal tiene un costo distinto.
+          </li>
+          <li>
+            <strong>Método concreto:</strong> <code>resumen()</code>, que
+            devuelve un texto legible con la información común.
+          </li>
+          <li>
+            <strong>Propiedad calculada:</strong> <code>tipo</code>, que
+            devuelve el nombre real de la clase.
+          </li>
+          <li>
+            <strong>Validaciones:</strong> el destinatario y el mensaje no
+            pueden estar vacíos.
+          </li>
+        </ul>
+
+        <h3>2.2. Subclases concretas</h3>
+        <p>
+          Se deben implementar <strong>como mínimo tres</strong> de los
+          siguientes canales (se permite implementar los tres):
+        </p>
+
+        <div class="canales">
+          <div class="canal-card">
+            <h4>Email</h4>
+            <ul>
+              <li>
+                Atributos: <code>asunto</code>, <code>cuerpo</code>,
+                <code>dominio</code> (por ejemplo, "gmail.com").
+              </li>
+              <li>Costo: <strong>$0.01</strong> por envío.</li>
+              <li>Estado al enviar: <code>"ENVIADO"</code>.</li>
+            </ul>
+          </div>
+
+          <div class="canal-card">
+            <h4>SMS</h4>
+            <ul>
+              <li>
+                Atributos: <code>numero_telefono</code>, <code>operadora</code>.
+              </li>
+              <li>Costo: <strong>$0.10</strong> por envío.</li>
+              <li>
+                Validación: el número debe contener
+                <strong>exactamente 10 dígitos</strong>.
+              </li>
+              <li>Estado al enviar: <code>"ENTREGADO"</code>.</li>
+            </ul>
+          </div>
+
+          <div class="canal-card">
+            <h4>PushNotification</h4>
+            <ul>
+              <li>
+                Atributos: <code>dispositivo</code> ("Android" o "iOS"),
+                <code>token</code>.
+              </li>
+              <li>
+                Costo: <strong>$0.00</strong> (gratuito, aunque requiere token).
+              </li>
+              <li>Validación: el dispositivo debe ser "Android" o "iOS".</li>
+              <li>Estado al enviar: <code>"RECIBIDO"</code>.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ENTREGABLES -->
+      <section>
+        <h2>3. Entregables</h2>
+
+        <h3>3.1. Diagrama UML</h3>
+        <p>Elabore el diagrama de clases, el cual debe mostrar:</p>
+        <ul>
+          <li>
+            La clase abstracta con sus atributos, métodos abstractos y métodos
+            concretos.
+          </li>
+          <li>Las subclases con sus atributos y métodos propios.</li>
+          <li>Las relaciones de herencia.</li>
+          <li>
+            Los símbolos de visibilidad: <code>-</code> (privado),
+            <code>#</code> (protegido) y <code>+</code> (público).
+          </li>
+        </ul>
+        <p>
+          <em
+            >El diagrama puede realizarse a mano o con herramientas como
+            draw.io, Lucidchart o similares.</em
+          >
+        </p>
+
+        <h3>3.2. Código</h3>
+        <p>
+          Implemente el sistema en Python. El código debe cumplir
+          <strong>obligatoriamente</strong> con lo siguiente:
+        </p>
+        <ul class="checklist">
+          <li>Importar <code>from abc import ABC, abstractmethod</code>.</li>
+          <li>La clase base debe heredar de <code>ABC</code>.</li>
+          <li>
+            Los métodos obligatorios deben estar decorados con
+            <code>@abstractmethod</code>.
+          </li>
+          <li>Cada subclase debe invocar <code>super().__init__()</code>.</li>
+          <li>
+            Cada subclase debe implementar <strong>todos</strong> los métodos
+            abstractos.
+          </li>
+          <li>
+            Validar los datos en el constructor, lanzando
+            <code>ValueError</code> cuando sean inválidos.
+          </li>
+          <li>
+            Emplear <code>try/except</code> para capturar errores al crear o
+            utilizar objetos.
+          </li>
+          <li>
+            Utilizar <code>isinstance()</code> en alguna parte del código para
+            demostrar el polimorfismo.
+          </li>
+        </ul>
+
+        <h3>3.3. Demostración en consola</h3>
+        <p>Cree un archivo <code>main.py</code> que realice lo siguiente:</p>
+        <ol>
+          <li>
+            Cree al menos <strong>una instancia de cada subclase</strong>.
+          </li>
+          <li>Almacene las instancias en una <strong>lista</strong>.</li>
+          <li>
+            Recorra la lista con un ciclo <code>for</code> e invoque
+            <code>resumen()</code>, <code>enviar()</code> y
+            <code>costo()</code> de cada objeto.
+          </li>
+          <li>
+            Intente instanciar <code>Notificacion</code> directamente (la
+            operación debe fallar).
+          </li>
+          <li>
+            Defina una subclase incompleta (sin implementar
+            <code>enviar()</code>) e intente instanciarla (la operación debe
+            fallar).
+          </li>
+          <li>
+            Muestre el <strong>MRO</strong> de cada subclase mediante
+            <code>Clase.__mro__</code>.
+          </li>
+          <li>
+            Emplee <code>isinstance()</code> para verificar que todas las
+            instancias pertenecen también a <code>Notificacion</code>.
+          </li>
+        </ol>
+      </section>
+
+      <!-- RESTRICCIONES -->
+      <section>
+        <h2>4. Restricciones</h2>
+        <div class="warning-box">
+          <div class="box-title">Consideraciones obligatorias</div>
+          <ul style="margin-left: 20px; margin-bottom: 0">
+            <li>
+              <strong>No</strong> se permite utilizar
+              <code>NotImplementedError</code> como sustituto de
+              <code>@abstractmethod</code>.
+            </li>
+            <li>
+              <strong>No</strong> se debe repetir en las subclases la lógica que
+              ya esté definida en la clase base.
+            </li>
+            <li>
+              <strong>No</strong> se deben incluir en la clase base métodos que
+              apliquen únicamente a una subclase.
+            </li>
+            <li>
+              Se <strong>permite</strong> añadir métodos propios que solo posean
+              algunas subclases.
+            </li>
+            <li>
+              Se <strong>permite</strong> añadir propiedades y validaciones
+              adicionales cuando se consideren pertinentes.
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- PREGUNTAS -->
+      <section>
+        <h2>5. Preguntas de reflexión</h2>
+        <p>Además del código, responda brevemente las siguientes preguntas:</p>
+        <ol class="preguntas">
+          <li>
+            ¿Por qué <code>Notificacion</code> es una clase abstracta y no una
+            clase ordinaria?
+          </li>
+          <li>
+            ¿Qué diferencia existe entre <code>enviar()</code> y
+            <code>resumen()</code> en cuanto a su naturaleza (abstracto o
+            concreto)? Justifique la decisión adoptada.
+          </li>
+          <li>
+            ¿Qué ocurre si se omite la implementación de <code>costo()</code> en
+            una subclase? ¿En qué momento se detecta el error?
+          </li>
+          <li>
+            ¿Por qué los atributos <code>destinatario</code> y
+            <code>mensaje</code> se definen en la clase base y no en cada
+            subclase?
+          </li>
+          <li>
+            ¿Qué ventaja ofrece almacenar todos los canales en una misma lista y
+            recorrerla con un ciclo <code>for</code>?
+          </li>
+          <li>
+            Si se desea incorporar un nuevo canal <code>WhatsApp</code>, ¿qué
+            elementos del código existente sería necesario modificar?
+          </li>
+        </ol>
+      </section>
+
+      <!-- RÚBRICA -->
+      <section>
+        <h2>6. Criterios de evaluación</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Criterio</th>
+              <th style="text-align: center">Puntos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Diagrama UML correcto y completo</td>
+              <td style="text-align: center">15</td>
+            </tr>
+            <tr>
+              <td>
+                Clase abstracta con métodos abstractos y concretos correctamente
+                definidos
+              </td>
+              <td style="text-align: center">15</td>
+            </tr>
+            <tr>
+              <td>Implementación de al menos tres subclases concretas</td>
+              <td style="text-align: center">15</td>
+            </tr>
+            <tr>
+              <td>
+                Validaciones en los constructores mediante
+                <code>ValueError</code>
+              </td>
+              <td style="text-align: center">10</td>
+            </tr>
+            <tr>
+              <td>
+                Uso correcto de <code>super().__init__()</code> en todas las
+                subclases
+              </td>
+              <td style="text-align: center">10</td>
+            </tr>
+            <tr>
+              <td>
+                <code>main.py</code> con demostración funcional y uso de
+                polimorfismo
+              </td>
+              <td style="text-align: center">15</td>
+            </tr>
+            <tr>
+              <td>Manejo adecuado de errores con <code>try/except</code></td>
+              <td style="text-align: center">10</td>
+            </tr>
+            <tr>
+              <td>Uso de <code>isinstance()</code> y <code>__mro__</code></td>
+              <td style="text-align: center">5</td>
+            </tr>
+            <tr>
+              <td>Respuestas a las preguntas de reflexión</td>
+              <td style="text-align: center">5</td>
+            </tr>
+            <tr class="total">
+              <td>Total</td>
+              <td style="text-align: center">100</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- RETO EXTRA -->
+      <section>
+        <h2>7. Actividad complementaria (+10 puntos)</h2>
+        <div class="info-box">
+          <div class="box-title">Puntos adicionales</div>
+          <p>
+            Añada una <strong>segunda clase abstracta</strong>,
+            <code>Programable(ABC)</code>, con los siguientes elementos:
+          </p>
+          <ul>
+            <li>Método abstracto <code>programar(fecha_hora)</code>.</li>
+            <li>Método concreto <code>esta_programada()</code>.</li>
+          </ul>
+          <p>
+            Las clases <code>Email</code> y <code>PushNotification</code> deben
+            heredar <strong>también</strong> de
+            <code>Programable</code> (herencia múltiple). La clase
+            <code>SMS</code> <strong>no</strong> debe heredar de ella, dado que
+            los mensajes de texto no se programan.
+          </p>
+          <p>Investigue y responda:</p>
+          <ul>
+            <li>¿Cuál es el MRO de <code>Email</code> tras este cambio?</li>
+            <li>
+              ¿Es posible instanciar <code>Email</code> si no se implementa
+              <code>programar()</code>?
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ENTREGA -->
+      <section>
+        <h2>8. Formato de entrega</h2>
+        <p>Se deberá cargar en la plataforma lo siguiente:</p>
+        <ol>
+          <li>
+            <strong>Un archivo PDF</strong> que contenga:
+            <ul>
+              <li>Portada (nombre, matrícula y fecha).</li>
+              <li>
+                El <strong>diagrama UML</strong> (se admite fotografía del
+                dibujo realizado a mano).
+              </li>
+              <li>El <strong>código</strong> de todos los archivos.</li>
+              <li>
+                Las <strong>respuestas</strong> a las seis preguntas de
+                reflexión.
+              </li>
+              <li>
+                <strong>Capturas de pantalla</strong> de la ejecución de la
+                demostración.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>El código en el aula virtual</strong> (archivos
+            <code>.py</code> individuales o enlace a un repositorio de GitHub).
+          </li>
+        </ol>
+      </section>
+
+      <!-- PIE DE PÁGINA -->
+      <footer>
+        <p>
+          Se recomienda, ante cualquier error, imprimir el contenido de las
+          variables involucradas antes de solicitar asistencia.
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
